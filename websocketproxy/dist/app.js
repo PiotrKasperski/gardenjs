@@ -9,5 +9,5 @@ const httpPort = process.env.PORT || 8080;
 const httpServer = http.createServer(app);
 const websocketServer = new websocket_server_1.WebsocketServer(httpServer);
 httpServer.listen(httpPort, () => {
-    console.log(`Server started on port ${httpServer.address().port} :)`);
+    console.log(`Server started on port ${httpServer.address().port}`);
 });

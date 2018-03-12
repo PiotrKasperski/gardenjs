@@ -22,10 +22,11 @@ class WebsocketServer {
         webSocket.on('message', (message) => {
             try {
                 let messageReciver = new messageReciver_1.MessageReciver(message);
+                this.brodcastEmitter.emit(messageReciver.getInstruction(), webSocket.clientType);
                 if (messageReciver.getEvent() === 'setClientTypeAs') {
                     webSocket.clientType = messageReciver.getData();
                 }
-                this.brodcastEmitter.emit(messageReciver.getInstruction());
+                console.log(webSocket.clientType);
             }
             catch (e) {
                 console.log(e.message);

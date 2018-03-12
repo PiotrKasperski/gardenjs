@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class MessageReciver {
     constructor(payload) {
         let data = JSON.parse(payload);
+        console.log(payload);
         if (!data.event || data.event !== "setClientTypeAs") {
             data.event = "sendForward";
             data.data = payload;

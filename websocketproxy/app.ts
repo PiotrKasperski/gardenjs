@@ -15,7 +15,7 @@ const httpServer = http.createServer(app);
 const websocketServer =  new WebsocketServer(httpServer);
 
 httpServer.listen(httpPort, ()=>{
-    console.log(`Server started on port ${httpServer.address().port} :)`)
+    console.log(`Server started on port ${httpServer.address().port}`)
 })
 
 

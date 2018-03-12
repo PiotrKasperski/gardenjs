@@ -14,20 +14,26 @@ export class BroadcastEmmiter {
         this.eventsReciver();
     }
 
-    public emit(instruction: Message){
-        this.emitter.emit(instruction.event, instruction.data);
-        console.log(`emmiting ${instruction.event}`)
+    public emit(instruction: Message, clientType: string){
+        this.emitter.emit(instruction.event, instruction.data, clientType);
+        //console.log(`emmiting ${instruction.event}`)
     }
 
     private eventsReciver(){
 
         this.emitter.on('setClientTypeAs',(data: string) =>{
             this.websocketServer.clients.forEach(client =>{
-                console.log(client.clientType);
+                //console.log(client.clientType);
                 if(client.clientType === "client") client.send(`new client is connected`);
                 
             })
-            console.log(`set client type as ${data}`)
+            //console.log(`set client type as ${data}`)
+        })
+
+        this.emitter.on('sendForward', (data: string, clientType: string) =>{
+            this.websocketServer.clients.forEach(client =>{
+                if(client.clientType && client.clientType !== clientType) client.send(data);
+            })
         })
 
 

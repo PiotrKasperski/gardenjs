@@ -34,13 +34,18 @@ export class WebsocketServer {
     private messages(webSocket: WebSocket){
         webSocket.on('message',(message: string) =>{
             try {
+
                 let messageReciver = new MessageReciver(message);
+
+                this.brodcastEmitter.emit(messageReciver.getInstruction() , webSocket.clientType);
                 
                 if(messageReciver.getEvent() === 'setClientTypeAs' ){
                     webSocket.clientType = messageReciver.getData();
                 }
+
+                console.log(webSocket.clientType);
                 
-                this.brodcastEmitter.emit(messageReciver.getInstruction());
+                
             
             } catch (e) {
                 console.log(e.message);
