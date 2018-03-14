@@ -1,4 +1,8 @@
+import {TemperatureSensor} from './temperatureSensor'
+
 export class Sensors {
+    private tempSensor = new TemperatureSensor();
+
     constructor(){
 
     }

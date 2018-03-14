@@ -3,7 +3,19 @@ import * as express from "express";
 import {WebSocketClient} from "./class/webSocketClient"
 import * as http from "http";
 import { normalize } from "path";
+import * as onoff from "onoff";
 
+const GPIO = onoff.Gpio;
+
+const LED = new GPIO(17,'out');
+
+var blinkInterval = setInterval(blinkLed, 2);
+
+function blinkLed() {
+    if(LED.readSync() === 0 ){
+        LED.writeSync(1);
+    } else LED.writeSync(0);
+}
 
 //const server = new Server;
 
