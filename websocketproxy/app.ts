@@ -10,6 +10,14 @@ const server = new Server;
 const app = server.bootstrap().app;
 
 const httpPort = process.env.PORT || 8080;
+
+app.set('port', httpPort);
+
+app.get('/', (req ,res) =>{
+
+    res.send(httpServer.address());
+})
+
 const httpServer = http.createServer(app);
 
 const websocketServer =  new WebsocketServer(httpServer);

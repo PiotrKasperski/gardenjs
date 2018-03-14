@@ -6,6 +6,10 @@ const http = require("http");
 const server = new server_1.Server;
 const app = server.bootstrap().app;
 const httpPort = process.env.PORT || 8080;
+app.set('port', httpPort);
+app.get('/', (req, res) => {
+    res.send(httpServer.address());
+});
 const httpServer = http.createServer(app);
 const websocketServer = new websocket_server_1.WebsocketServer(httpServer);
 httpServer.listen(httpPort, () => {
