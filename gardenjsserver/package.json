@@ -5,21 +5,27 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development nodemon ./dist/app.js",
-    "grunt": "grunt"
+    "dev": "tsc && NODE_ENV=development nodemon ./dist/app.js",
+    "grunt": "grunt",
+    "deploy-dev": "tsc && rsync -a -e \"ssh\" --rsync-path=\"sudo rsync\" dist/ pi@192.168.8.108:/home/pi/Development/gardenjs/"
   },
   "author": "Piotr Kasperski",
   "license": "ISC",
   "dependencies": {
     "ds18b20-raspi": "^0.2.5",
     "express": "^4.16.2",
+    "mcp3008.js": "^0.4.1",
+    "melanke-watchjs": "^1.4.3",
     "nodemon": "^1.17.2",
     "onoff": "^2.0.0",
+    "rx": "^4.1.0",
+    "rxjs": "^5.5.7",
     "ws": "^5.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.11.1",
     "@types/onoff": "0.0.27",
+    "@types/rx": "^4.1.1",
     "@types/ws": "^4.0.1",
     "grunt": "^1.0.2",
     "grunt-contrib-copy": "^1.0.0",

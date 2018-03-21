@@ -1,6 +1,7 @@
 import * as WebSocket from 'ws';
 import * as events from 'events';
 import {Sensors} from './sensors'
+import * as Rx from 'rxjs/Rx'
 
 export class MessageReciver {
 
@@ -14,14 +15,10 @@ export class MessageReciver {
 
         this.webSocket.on('message', (message: string) =>{
             this.emitter.emit(this.messageParser(message).event, this.messageParser(message).data);
-            setInterval( this.intervalFunction , 5000)
         })
 
         this.eventListeners();
-
-       
-
-    }
+      }
     private set(webSocket: WebSocket) {
 
         this.webSocket = webSocket;
@@ -30,9 +27,6 @@ export class MessageReciver {
 
         this.sensors = new Sensors();
 
-    }
-    private intervalFunction(){
-       if(this.webSocket) this.webSocket.send(JSON.stringify(this.sensors.getSensorsValue()));
     }
 
     private messageParser(message: string){
@@ -46,8 +40,22 @@ export class MessageReciver {
             this.webSocket.send(`{"time": "${date.getHours()}:${date.getMinutes()}"}`)
         })
 
-        this.emitter.on('getSensorsValue', () => {
-            setInterval( this.intervalFunction , 5000)
+       
+        this.emitter.on('getSensorsValue' , () => {
+            console.log(`sensor value emmiter`);
+            
+            let intervalObserver = Rx.Observable
+            .interval(500)
+            .flatMap( () => {
+                return this.sensors.getSensorsValue().map(data =>{
+                    this.webSocket.send(JSON.stringify({event: "sensorsValue", data: JSON.stringify(data) }))
+                    return JSON.stringify(data);
+                });
+            })
+            .distinctUntilChanged()
+            .subscribe(data =>{
+                console.log(data);
+            })
         })
 
     }

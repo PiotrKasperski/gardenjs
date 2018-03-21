@@ -14,6 +14,7 @@ export class WebSocketClient {
         this.webSocketClient = new WebSocket(this.websocketServerAddress);
         this.setProxyClientType();
         this.messageReciver = new MessageReciver(this.webSocketClient);
+        this.reconect();
     }
 
     private setProxyClientType() {
@@ -26,6 +27,17 @@ export class WebSocketClient {
         this.webSocketClient.on('pong', () =>{
             console.log(`pong`);
             let timeout = setTimeout(this.ping(), 50000);
+        })
+    }
+    private reconect(){
+        this.webSocketClient.on('close', (code: number, reason: string)=>{
+            console.log(`zamknieto polaczenie status: ${code}: ${reason}`)
+            this.webSocketClient = new WebSocket(this.websocketServerAddress);
+        })
+        this.webSocketClient.on('error', (err: Error) =>{
+            console.log(`error : ${err}`)
+            this.webSocketClient = new WebSocket(this.websocketServerAddress);
+
         })
     }
     private ping(){
