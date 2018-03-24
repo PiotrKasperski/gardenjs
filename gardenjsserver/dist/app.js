@@ -3,20 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const webSocketClient_1 = require("./class/webSocketClient");
 const http = require("http");
-const onoff = require("onoff");
-const GPIO = onoff.Gpio;
-const LED = new GPIO(17, 'out');
-const relay = new GPIO(27, 'out');
-var blinkInterval = setInterval(blinkLed, 1000);
-function blinkLed() {
-    if (LED.readSync() === 0) {
-        LED.writeSync(1);
-    }
-    else
-        LED.writeSync(0);
-}
-//const server = new Server;
-//const app = server.bootstrap().app;
+const menagePlanting_1 = require("./class/menagePlanting");
 const app = express();
 const httpPort = process.env.PORT || 6669;
 const httpServer = http.createServer(app);
@@ -26,6 +13,8 @@ try {
 catch (e) {
     console.error(e);
 }
+const menage = new menagePlanting_1.MenagePlanting();
 httpServer.listen(httpPort, () => {
     console.log(`Server started on port ${httpServer.address().port}`);
 });
+//# sourceMappingURL=app.js.map

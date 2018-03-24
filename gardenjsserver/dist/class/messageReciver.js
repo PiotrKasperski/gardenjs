@@ -10,6 +10,7 @@ class MessageReciver {
             this.emitter.emit(this.messageParser(message).event, this.messageParser(message).data);
         });
         this.eventListeners();
+        this.sensorsValuesSender().subscribe(() => { });
     }
     set(webSocket) {
         this.webSocket = webSocket;
@@ -27,19 +28,20 @@ class MessageReciver {
         });
         this.emitter.on('getSensorsValue', () => {
             console.log(`sensor value emmiter`);
-            let intervalObserver = Rx.Observable
-                .interval(500)
-                .flatMap(() => {
-                return this.sensors.getSensorsValue().map(data => {
-                    this.webSocket.send(JSON.stringify({ event: "sensorsValue", data: JSON.stringify(data) }));
-                    return JSON.stringify(data);
-                });
-            })
-                .distinctUntilChanged()
-                .subscribe(data => {
-                console.log(data);
-            });
         });
+    }
+    sensorsValuesSender() {
+        return Rx.Observable
+            .interval(1000)
+            .flatMap(() => {
+            return this.sensors.getSensorsValue().map(data => {
+                console.log(data);
+                this.webSocket.send(JSON.stringify({ event: "sensorsValue", data: JSON.stringify(data) }));
+                return JSON.stringify(data);
+            });
+        })
+            .distinctUntilChanged();
     }
 }
 exports.MessageReciver = MessageReciver;
+//# sourceMappingURL=messageReciver.js.map

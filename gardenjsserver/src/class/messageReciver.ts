@@ -18,6 +18,7 @@ export class MessageReciver {
         })
 
         this.eventListeners();
+        this.sensorsValuesSender().subscribe(()=>{});
       }
     private set(webSocket: WebSocket) {
 
@@ -39,25 +40,22 @@ export class MessageReciver {
             let date = new Date();
             this.webSocket.send(`{"time": "${date.getHours()}:${date.getMinutes()}"}`)
         })
-
        
         this.emitter.on('getSensorsValue' , () => {
             console.log(`sensor value emmiter`);
-            
-            let intervalObserver = Rx.Observable
-            .interval(500)
-            .flatMap( () => {
-                return this.sensors.getSensorsValue().map(data =>{
-                    this.webSocket.send(JSON.stringify({event: "sensorsValue", data: JSON.stringify(data) }))
-                    return JSON.stringify(data);
-                });
-            })
-            .distinctUntilChanged()
-            .subscribe(data =>{
-                console.log(data);
-            })
         })
 
     }
-
+    private sensorsValuesSender():Rx.Observable<string>{
+        return Rx.Observable
+        .interval(1000)
+        .flatMap( () => {
+            return this.sensors.getSensorsValue().map(data =>{
+                console.log(data)
+                this.webSocket.send(JSON.stringify({event: "sensorsValue", data: JSON.stringify(data) }))
+                return JSON.stringify(data);
+            });
+        })
+        .distinctUntilChanged()
+    }
 }

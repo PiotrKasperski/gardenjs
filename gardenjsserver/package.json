@@ -2,12 +2,16 @@
   "name": "gardenjsserver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "/dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc && NODE_ENV=development nodemon ./dist/app.js",
+    "dev": "/opt/nodejs/bin/pm2 stop all && NODE_ENV=development nodemon ./dist/app.js",
     "grunt": "grunt",
-    "deploy-dev": "tsc && rsync -a -e \"ssh\" --rsync-path=\"sudo rsync\" dist/ pi@192.168.8.108:/home/pi/Development/gardenjs/"
+    "watch:ts": "watch 'npm run tsc && npm run wait:dist' src",
+    "wait:dist": "just-wait -p 'dist/**/*.js' -d 5000 && npm run deploy-dev ",
+    "watch": "npm run watch:ts",
+    "tsc": "tsc",
+    "deploy-dev": "tsc && rsync -a -e \"ssh\" --rsync-path=\"sudo rsync\" dist/ pi@192.168.8.101:/home/pi/Development/gardenjs/dist && rsync -a -e \"ssh\" --rsync-path=\"sudo rsync\" package.json pi@192.168.8.101:/home/pi/Development/gardenjs/"
   },
   "author": "Piotr Kasperski",
   "license": "ISC",
@@ -18,8 +22,10 @@
     "melanke-watchjs": "^1.4.3",
     "nodemon": "^1.17.2",
     "onoff": "^2.0.0",
+    "pi-spi": "^1.0.2",
     "rx": "^4.1.0",
     "rxjs": "^5.5.7",
+    "wiring-pi": "^2.2.1",
     "ws": "^5.0.0"
   },
   "devDependencies": {
@@ -27,10 +33,21 @@
     "@types/onoff": "0.0.27",
     "@types/rx": "^4.1.1",
     "@types/ws": "^4.0.1",
+    "concurrently": "^3.5.1",
     "grunt": "^1.0.2",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
+    "grunt-run": "^0.8.0",
+    "grunt-shell": "^2.1.0",
     "grunt-ts": "^6.0.0-beta.19",
-    "typescript": "^2.7.2"
+    "typescript": "^2.7.2",
+    "watch": "^1.0.2"
+  },
+  "nodemonConfig": {
+    "events": {
+      "exit": "/opt/nodejs/bin/pm2 restart all",
+      "crash": "/opt/nodejs/bin/pm2 restart all"
+    }
+    
   }
 }

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ADC = require("mcp3008.js");
+const Rx = require("rxjs/Rx");
 class Adc {
     constructor() {
         this.adc = new ADC();
@@ -8,8 +9,12 @@ class Adc {
             console.log(`Wartość z mcp3008: ${value}`);
         });
     }
-    getValueFromChanel(channel, callback) {
-        this.adc.read(channel, callback);
+    getValueFromChanelCb(channel, cb) {
+        this.adc.read(channel, cb);
+    }
+    getValueFromChanel(channel) {
+        let bindCallback = Rx.Observable.bindCallback(this.adc.read);
+        return bindCallback(channel);
     }
     startPolling(channel, callback, interval) {
         this.adc.poll(channel, interval, callback);
